@@ -8,8 +8,11 @@ import {
   Body,
   ParseIntPipe,
   Delete,
+  ValidationPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
+import { CreateUserDto } from 'src/dto/create-user.dto';
+import { UpdateUserDto } from 'src/dto/update-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -32,13 +35,8 @@ export class UsersController {
 
   @Post()
   create(
-    @Body()
-    user: {
-      name: string;
-      age: number;
-      role: 'ADMIN' | 'INTERN';
-      email: string;
-    },
+    @Body(ValidationPipe)
+    user: CreateUserDto,
   ) {
     return this.usersService.create(user);
   }
@@ -46,13 +44,8 @@ export class UsersController {
   @Patch(':id')
   updateUser(
     @Param('id', ParseIntPipe) id: number,
-    @Body()
-    updatedUser: Partial<{
-      name: string;
-      age: number;
-      role: 'ADMIN' | 'INTERN';
-      email: string;
-    }>,
+    @Body(ValidationPipe)
+    updatedUser: UpdateUserDto,
   ) {
     return this.usersService.updateUser(id, updatedUser);
   }

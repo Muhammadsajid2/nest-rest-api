@@ -1,105 +1,57 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ConflictException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { CreateUserDto } from 'src/dto/create-user.dto';
+import { UpdateUserDto } from 'src/dto/update-user.dto';
+import { User, UserDocument } from './schemas/user.schema';
 
 @Injectable()
 export class UsersService {
-  private users = [
-    {
-      id: 1,
-      name: 'John Doe',
-      age: 30,
-      role: 'ADMIN',
-      email: 'john.doe@example.com',
-    },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      age: 25,
-      role: 'INTERN',
-      email: 'jane.smith@example.com',
-    },
-    {
-      id: 3,
-      name: 'Sam Wilson',
-      age: 28,
-      role: 'ADMIN',
-      email: 'sam.wilson@example.com',
-    },
-    {
-      id: 4,
-      name: 'Emily Davis',
-      age: 22,
-      role: 'INTERN',
-      email: 'emily.davis@example.com',
-    },
-  ];
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  // Method to find all users or filter by role
-  findAll(role?: 'ADMIN' | 'INTERN') {
+  async findAll(role?: 'ADMIN' | 'INTERN') {
     if (role) {
-      const normalizedRole = role.toUpperCase();
-      return this.users.filter((user) => user.role === normalizedRole);
+      return this.userModel.find({ role }).exec();
     }
-    return this.users;
+    return this.userModel.find().exec();
   }
 
-  // Method to find all interns
-  findAllInterns() {
-    return this.users.filter((user) => user.role === 'INTERN');
+  async findAllInterns() {
+    return this.userModel.find({ role: 'INTERN' }).exec();
   }
 
-  // Method to find a single user by ID
-  findOne(id: number) {
-    return this.users.find((user) => user.id === id) || null;
+  async findOne(id: number) {
+    return this.userModel.findById(id).exec();
   }
 
-  // Method to create a new user
-  create(user: {
-    name: string;
-    age: number;
-    role: 'ADMIN' | 'INTERN';
-    email: string;
-  }) {
-    const newUser = {
-      id: this.users.length + 1,
-      ...user,
-      role: user.role.toUpperCase(),
-    };
-    this.users.push(newUser);
-    return newUser;
-  }
+  async create(createUserDto: CreateUserDto) {
+    try {
+      // Check if user with email already exists
+      const existingUser = await this.userModel
+        .findOne({ email: createUserDto.email })
+        .exec();
+      if (existingUser) {
+        throw new ConflictException('Email already exists');
+      }
 
-  // Method to update an existing user by ID
-  updateUser(
-    id: number,
-    updatedUser: Partial<{
-      name: string;
-      age: number;
-      role: 'ADMIN' | 'INTERN';
-      email: string;
-    }>,
-  ) {
-    const userIndex = this.users.findIndex((user) => user.id === id);
-    if (userIndex === -1) {
-      return null; // User not found
+      const createdUser = new this.userModel(createUserDto);
+      return await createdUser.save();
+    } catch (error) {
+      if (error.code === 11000) {
+        // MongoDB duplicate key error code
+        throw new ConflictException('Email already exists');
+      }
+      throw error;
     }
-
-    const updatedUserData = {
-      ...this.users[userIndex],
-      ...updatedUser,
-      role: updatedUser.role
-        ? updatedUser.role.toUpperCase()
-        : this.users[userIndex].role,
-    };
-    this.users[userIndex] = updatedUserData;
-    return updatedUserData;
   }
 
-  deleteUser(id: number) {
-    const userIndex = this.users.findIndex((user) => user.id === id);
-    if (userIndex === -1) {
-      return null; // User not found
-    }
-    this.users.splice(userIndex, 1); // Remove the user
-    return this.findAll(); // Return the updated list of users
+  async updateUser(id: number, updateUserDto: UpdateUserDto) {
+    return this.userModel
+      .findByIdAndUpdate(id, updateUserDto, { new: true })
+      .exec();
+  }
+
+  async deleteUser(id: number) {
+    return this.userModel.findByIdAndDelete(id).exec();
   }
 }
