@@ -37,10 +37,7 @@ export class UsersService {
     return this.usersRepository.create(createUserDto);
   }
 
-  async updateUser(
-    id: number,
-    updateUserDto: UpdateUserDto,
-  ): Promise<Omit<UserDocument, 'password'>> {
+  async updateUser(id: number, updateUserDto: UpdateUserDto) {
     return this.usersRepository.findOneAndUpdate(
       { _id: id.toString() },
       updateUserDto,
