@@ -21,11 +21,11 @@ export class AuthService {
   async signup(
     signupDto: SignupDto,
   ): Promise<{ token: string; statusCode: number; message: string }> {
-    const { name, email, password, phone, role, age } = signupDto;
+    const { name, email, password } = signupDto;
 
     // Check if user exists
     const existingUser = await this.userModel.findOne({
-      $or: [{ email }, { phone }],
+      $or: [{ email }],
     });
     if (existingUser) {
       throw new ConflictException('Email or phone number already exists');
@@ -38,10 +38,7 @@ export class AuthService {
     const user = await this.userModel.create({
       name,
       email,
-      phone,
       password: hashedPassword,
-      role,
-      age,
     });
 
     // Generate JWT token

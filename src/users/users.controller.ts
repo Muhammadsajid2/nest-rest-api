@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Patch,
-  Query,
   Param,
   Body,
   ParseIntPipe,
@@ -11,16 +10,17 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from 'src/dto/create-user.dto';
-import { UpdateUserDto } from 'src/dto/update-user.dto';
+import { CreateUserDto, UpdateUserDto } from './dto';
+import { IPaginationQueryParams, PaginationQueryParams } from 'src/decorators';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
   @Get()
-  findAll(@Query('role') role?: 'ADMIN' | 'INTERN') {
-    return this.usersService.findAll(role);
+  findAll(
+    @PaginationQueryParams() paginationQueryParams: IPaginationQueryParams,
+  ) {
+    return this.usersService.findAll(paginationQueryParams);
   }
 
   @Get('interns')
@@ -29,8 +29,8 @@ export class UsersController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.findOne(id);
+  findOne(@Param('id') id: string) {
+    return this.usersService.getUser(id);
   }
 
   @Post()
@@ -38,7 +38,7 @@ export class UsersController {
     @Body(ValidationPipe)
     user: CreateUserDto,
   ) {
-    return this.usersService.create(user);
+    return this.usersService.createNewUser(user);
   }
 
   @Patch(':id')

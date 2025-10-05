@@ -1,0 +1,5 @@
+export const UserCollectionName = 'User'
+export const BusinessCollectionName = 'Business'
+export const BusinessDepartmentCollectionName = 'BusinessDepartment'
+export const RolePermissionsCollectionName = 'RolePermissions'
+export const InvoicesCollectionName = 'Invoice'

@@ -1,0 +1,5 @@
+export const DailyMidnightCronTime = '0 0 * * *'
+export const EveryOneMinuteCronTime = '*/1 * * * *'
+export const EveryOneSecondCronTime = '*/1 * * * * *'
+export const EveryFiveSecondCronTime = '*/5 * * * * *'
+export const EveryFifteenCronTime = '*/15 * * * * *'
