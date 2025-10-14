@@ -5,6 +5,9 @@ import { AuthModule } from './auth/auth.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TaskModule } from './task/task.module';
+import { PaymentManagementModule } from './payment-management/payment-management.module';
+import { PaymenManagementController } from './paymen-management/paymen-management.controller';
+import { PaymentManagementModule } from './payment-management/payment-management.module';
 
 @Module({
   imports: [
@@ -18,8 +21,9 @@ import { TaskModule } from './task/task.module';
     UsersModule,
     AuthModule,
     TaskModule,
+    PaymentManagementModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, PaymenManagementController],
   providers: [AppService],
 })
 export class AppModule {}
