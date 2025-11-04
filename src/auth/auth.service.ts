@@ -10,12 +10,14 @@ import * as bcrypt from 'bcrypt';
 import { User, UserDocument } from '../users/schemas/user.schema';
 import { SignupDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
+import { AuthRepository } from './auth.repository';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private jwtService: JwtService,
+    private authRepository: AuthRepository,
   ) {}
 
   async signup(
@@ -24,7 +26,7 @@ export class AuthService {
     const { name, email, password } = signupDto;
 
     // Check if user exists
-    const existingUser = await this.userModel.findOne({
+    const existingUser = await this.authRepository.findOne({
       $or: [{ email }],
     });
     if (existingUser) {
@@ -35,7 +37,7 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create new user
-    const user = await this.userModel.create({
+    const user = await this.authRepository.create({
       name,
       email,
       password: hashedPassword,
@@ -57,7 +59,7 @@ export class AuthService {
     const { email, password } = loginDto;
 
     // Find user by email
-    const user = await this.userModel.findOne({ email });
+    const user = await this.authRepository.findOne({ email });
     if (!user) {
       throw new UnauthorizedException('Invalid email or password');
     }

@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto } from './dto';
 import { UsersRepository } from './users.repository';
-import { UserDocument } from './schemas/user.schema';
 import { IPaginationQueryParams } from 'src/decorators';
 import { stringToObject } from 'src/util/string-to-object.util';
 
