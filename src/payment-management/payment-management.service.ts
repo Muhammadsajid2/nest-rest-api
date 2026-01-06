@@ -1,6 +1,6 @@
-import { Body, Injectable, Post, ValidationPipe } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PaymentManagementRepository } from './payment-management.repository';
-import { CreateUserDto } from 'src/users/dto';
+import { CreatePaymentDto } from './dto';
 
 @Injectable()
 export class PaymentManagementService {
@@ -8,11 +8,7 @@ export class PaymentManagementService {
     private readonly paymentManagementRepository: PaymentManagementRepository,
   ) {}
 
-  @Post()
-  create(
-    @Body(ValidationPipe)
-    body: CreateUserDto,
-  ) {
+  create(body: CreatePaymentDto) {
     return this.paymentManagementRepository.create(body);
   }
 }
