@@ -6,6 +6,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TaskModule } from './task/task.module';
 import { PaymentManagementModule } from './payment-management/payment-management.module';
+import { CategoryModule } from './category/category.module';
+import { SubCategoryModule } from './sub-category/sub-category.module';
+import { VideoModule } from './video/video.module';
 
 @Module({
   imports: [
@@ -20,6 +23,9 @@ import { PaymentManagementModule } from './payment-management/payment-management
     AuthModule,
     TaskModule,
     PaymentManagementModule,
+    CategoryModule,
+    SubCategoryModule,
+    VideoModule,
   ],
   controllers: [AppController],
   providers: [AppService],
