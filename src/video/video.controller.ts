@@ -21,7 +21,7 @@ import {
 } from '../decorators';
 
 @Controller('videos')
-@UseGuards(AuthGuard('jwt'))
+// @UseGuards(AuthGuard('jwt'))
 export class VideoController {
   constructor(private readonly videoService: VideoService) {}
 

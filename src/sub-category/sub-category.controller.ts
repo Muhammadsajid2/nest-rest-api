@@ -21,7 +21,7 @@ import {
 } from '../decorators';
 
 @Controller('sub-category')
-@UseGuards(AuthGuard('jwt'))
+// @UseGuards(AuthGuard('jwt'))
 export class SubCategoryController {
   constructor(private readonly subCategoryService: SubCategoryService) {}
 

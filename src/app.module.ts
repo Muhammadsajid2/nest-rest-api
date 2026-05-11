@@ -9,6 +9,7 @@ import { PaymentManagementModule } from './payment-management/payment-management
 import { CategoryModule } from './category/category.module';
 import { SubCategoryModule } from './sub-category/sub-category.module';
 import { VideoModule } from './video/video.module';
+import { PhoneModule } from './phone/phone.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { VideoModule } from './video/video.module';
     CategoryModule,
     SubCategoryModule,
     VideoModule,
+    PhoneModule,
   ],
   controllers: [AppController],
   providers: [AppService],

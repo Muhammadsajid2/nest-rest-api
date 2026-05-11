@@ -9,6 +9,9 @@ export class Category extends Document {
   @Prop({ required: true })
   name: string;
 
+  @Prop({ required: true })
+  img: string;
+
   @Prop()
   description: string;
 

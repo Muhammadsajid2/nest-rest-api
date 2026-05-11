@@ -21,7 +21,7 @@ import {
 } from '../decorators';
 
 @Controller('category')
-@UseGuards(AuthGuard('jwt'))
+// @UseGuards(AuthGuard('jwt'))
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
