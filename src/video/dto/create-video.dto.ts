@@ -10,8 +10,9 @@ export class CreateVideoDto {
   category: string;
 
   @IsNotEmpty()
-  @IsMongoId()
-  subCategory: string;
+  @IsArray()
+  @IsMongoId({ each: true })
+  subCategory: string[];
 
   @IsNotEmpty()
   @IsString()

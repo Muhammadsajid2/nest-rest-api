@@ -19,11 +19,11 @@ export class Video extends Document {
   category: mongoose.Schema.Types.ObjectId;
 
   @Prop({
-    type: mongoose.Schema.Types.ObjectId,
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: SubCategory.name }],
     ref: SubCategory.name,
     required: true,
   })
-  subCategory: mongoose.Schema.Types.ObjectId;
+  subCategory: mongoose.Schema.Types.ObjectId[];
 
   @Prop({ required: true })
   img: string;
