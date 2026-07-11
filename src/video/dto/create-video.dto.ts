@@ -1,4 +1,11 @@
-import { IsNotEmpty, IsOptional, IsString, IsMongoId, IsArray } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsMongoId,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateVideoDto {
   @IsNotEmpty()
@@ -28,8 +35,8 @@ export class CreateVideoDto {
   description?: string;
 
   @IsOptional()
-  @IsString()
-  highlights?: string;
+  @IsBoolean()
+  highlights?: boolean;
 
   @IsOptional()
   @IsMongoId()

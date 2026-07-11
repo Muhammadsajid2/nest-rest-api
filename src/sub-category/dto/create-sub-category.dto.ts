@@ -1,9 +1,10 @@
-import { IsNotEmpty, IsOptional, IsString, IsMongoId } from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, IsString, IsMongoId } from 'class-validator';
 
 export class CreateSubCategoryDto {
   @IsNotEmpty()
-  @IsMongoId()
-  category: string;
+  @IsArray()
+  @IsMongoId({ each: true })
+  category: string[];
 
   @IsNotEmpty()
   @IsString()

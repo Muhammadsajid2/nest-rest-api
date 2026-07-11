@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto, UpdateUserDto } from './dto';
+import { CreateUserDto, UpdateCurrentUserDto, UpdateUserDto } from './dto';
 import { UsersRepository } from './users.repository';
 import { IPaginationQueryParams } from 'src/decorators';
 import { stringToObject } from 'src/util/string-to-object.util';
@@ -30,6 +30,14 @@ export class UsersService {
 
   async getUser(id: string) {
     return this.usersRepository.findById(id);
+  }
+
+  async getCurrentUser(id: string) {
+    return this.usersRepository.findById(id);
+  }
+
+  async updateCurrentUser(id: string, updateUserDto: UpdateCurrentUserDto) {
+    return this.usersRepository.updateById(id, updateUserDto);
   }
 
   async createNewUser(createUserDto: CreateUserDto) {

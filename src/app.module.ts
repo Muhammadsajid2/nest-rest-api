@@ -10,6 +10,7 @@ import { CategoryModule } from './category/category.module';
 import { SubCategoryModule } from './sub-category/sub-category.module';
 import { VideoModule } from './video/video.module';
 import { PhoneModule } from './phone/phone.module';
+import { KhataModule } from './khata/khata.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { PhoneModule } from './phone/phone.module';
     SubCategoryModule,
     VideoModule,
     PhoneModule,
+    KhataModule,
   ],
   controllers: [AppController],
   providers: [AppService],
