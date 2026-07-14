@@ -117,13 +117,16 @@ export class KhataService {
   }
 
   async getTransactions(id: string, user: CurrentUser) {
-    await this.getAccessibleKhata(id, user);
-    return this.transactionModel.find({ khataId: id, archived: false }).sort({ transactionDate: -1, createdAt: -1 }).lean();
+    const khata = await this.getAccessibleKhata(id, user);
+    return this.transactionModel
+      .find({ khataId: khata._id, archived: false })
+      .sort({ transactionDate: -1, createdAt: -1 })
+      .lean();
   }
 
   async getActivities(id: string, user: CurrentUser) {
-    await this.getAccessibleKhata(id, user);
-    return this.activityModel.find({ khataId: id }).sort({ createdAt: -1 }).limit(100).lean();
+    const khata = await this.getAccessibleKhata(id, user);
+    return this.activityModel.find({ khataId: khata._id }).sort({ createdAt: -1 }).limit(100).lean();
   }
 
   private normalizeExpense(khata: KhataDocument, dto: CreateKhataTransactionDto) {
@@ -179,7 +182,7 @@ export class KhataService {
 
   async updateTransaction(id: string, transactionId: string, dto: UpdateKhataTransactionDto, user: CurrentUser) {
     const khata = await this.getAccessibleKhata(id, user);
-    const transaction = await this.transactionModel.findOne({ _id: transactionId, khataId: id, archived: false });
+    const transaction = await this.transactionModel.findOne({ _id: transactionId, khataId: khata._id, archived: false });
     if (!transaction) throw new NotFoundException('Transaction not found');
     if (transaction.createdBy.toString() !== this.userId(user)) throw new ForbiddenException('You can only edit your own transactions');
     const merged = { ...transaction.toObject(), ...dto } as CreateKhataTransactionDto;
@@ -195,7 +198,7 @@ export class KhataService {
 
   async archiveTransaction(id: string, transactionId: string, user: CurrentUser) {
     const khata = await this.getAccessibleKhata(id, user);
-    const transaction = await this.transactionModel.findOne({ _id: transactionId, khataId: id, archived: false });
+    const transaction = await this.transactionModel.findOne({ _id: transactionId, khataId: khata._id, archived: false });
     if (!transaction) throw new NotFoundException('Transaction not found');
     if (transaction.createdBy.toString() !== this.userId(user)) throw new ForbiddenException('You can only archive your own transactions');
     const previousValues = transaction.toObject();
@@ -223,6 +226,7 @@ export class KhataService {
     const status = summary.outstandingBalance === 0 ? 'settled' : 'active';
     const changed = khata.status !== status;
     khata.status = status;
+    khata.markModified('status');
     await khata.save();
     if (changed && status === 'active') await this.log(khata._id, khata.createdBy.toString(), 'khata_reopened');
   }

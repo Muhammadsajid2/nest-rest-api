@@ -11,6 +11,8 @@ import { SubCategoryModule } from './sub-category/sub-category.module';
 import { VideoModule } from './video/video.module';
 import { PhoneModule } from './phone/phone.module';
 import { KhataModule } from './khata/khata.module';
+import { AppContentModule } from './app-content/app-content.module';
+import { PushNotificationModule } from './push-notification/push-notification.module';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { KhataModule } from './khata/khata.module';
     VideoModule,
     PhoneModule,
     KhataModule,
+    AppContentModule,
+    PushNotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

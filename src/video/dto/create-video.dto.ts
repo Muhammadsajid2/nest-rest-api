@@ -25,10 +25,10 @@ export class CreateVideoDto {
   @IsString()
   img: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  url: string[];
+  url?: string[];
 
   @IsOptional()
   @IsString()

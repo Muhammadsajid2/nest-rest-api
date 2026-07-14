@@ -28,7 +28,7 @@ export class Video extends Document {
   @Prop({ required: true })
   img: string;
 
-  @Prop({ type: [String], required: true })
+  @Prop({ type: [String], default: [] })
   url: string[];
 
   @Prop()
