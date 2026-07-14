@@ -13,6 +13,7 @@ import { PhoneModule } from './phone/phone.module';
 import { KhataModule } from './khata/khata.module';
 import { AppContentModule } from './app-content/app-content.module';
 import { PushNotificationModule } from './push-notification/push-notification.module';
+import { AlertModule } from './alert/alert.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { PushNotificationModule } from './push-notification/push-notification.mo
     KhataModule,
     AppContentModule,
     PushNotificationModule,
+    AlertModule,
   ],
   controllers: [AppController],
   providers: [AppService],
