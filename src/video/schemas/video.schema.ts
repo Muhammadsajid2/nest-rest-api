@@ -12,11 +12,11 @@ export class Video extends Document {
   label: string;
 
   @Prop({
-    type: mongoose.Schema.Types.ObjectId,
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: Category.name }],
     ref: Category.name,
     required: true,
   })
-  category: mongoose.Schema.Types.ObjectId;
+  category: mongoose.Schema.Types.ObjectId[];
 
   @Prop({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: SubCategory.name }],
