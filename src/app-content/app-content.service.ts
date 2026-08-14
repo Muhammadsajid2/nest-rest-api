@@ -44,7 +44,10 @@ export class AppContentService {
             videos: videos
               .filter(
                 (video) =>
-                  video.category?.toString() === category._id.toString() &&
+                  this.asArray(video.category).some(
+                    (categoryId) =>
+                      categoryId.toString() === category._id.toString(),
+                  ) &&
                   this.asArray(video.subCategory).some(
                     (subCategoryId) =>
                       subCategoryId.toString() === subCategory._id.toString(),

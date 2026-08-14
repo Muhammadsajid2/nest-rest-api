@@ -1,6 +1,10 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { CurrentUser } from '../decorators';
+import {
+  CurrentUser,
+  IPaginationQueryParams,
+  PaginationQueryParams,
+} from '../decorators';
 import { RegisterDeviceDto, SendNotificationDto } from './dto';
 import { PushNotificationService } from './push-notification.service';
 
@@ -16,14 +20,18 @@ export class PushNotificationController {
 
   @Get('devices')
   @UseGuards(AuthGuard('jwt'))
-  getDevices() {
-    return this.pushNotificationService.getDevices();
+  getDevices(
+    @PaginationQueryParams() paginationQueryParams: IPaginationQueryParams,
+  ) {
+    return this.pushNotificationService.getDevices(paginationQueryParams);
   }
 
   @Get('campaigns')
   @UseGuards(AuthGuard('jwt'))
-  getCampaigns() {
-    return this.pushNotificationService.getCampaigns();
+  getCampaigns(
+    @PaginationQueryParams() paginationQueryParams: IPaginationQueryParams,
+  ) {
+    return this.pushNotificationService.getCampaigns(paginationQueryParams);
   }
 
   @Post('send')

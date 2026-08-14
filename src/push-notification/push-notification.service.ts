@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { cert, getApps, initializeApp, ServiceAccount } from 'firebase-admin/app';
 import { getMessaging, Messaging } from 'firebase-admin/messaging';
 import { Model } from 'mongoose';
+import { IPaginationQueryParams } from '../decorators';
 import { RegisterDeviceDto, SendNotificationDto } from './dto';
 import { FcmDevice, FcmDeviceDocument } from './schemas/fcm-device.schema';
 import { NotificationCampaign, NotificationCampaignDocument } from './schemas/notification-campaign.schema';
@@ -56,16 +57,47 @@ export class PushNotificationService {
     return { id: device._id, enabled: device.enabled, topic: 'all_devices' };
   }
 
-  async getDevices() {
-    return this.deviceModel
+  async getDevices({ limit, offset }: IPaginationQueryParams) {
+    const [data, total] = await Promise.all([
+      this.deviceModel
       .find()
       .select('_id deviceId platform deviceName appVersion enabled lastSeenAt createdAt')
+      .skip(offset)
+      .limit(limit)
       .sort({ lastSeenAt: -1 })
-      .lean();
+      .lean(),
+      this.deviceModel.countDocuments(),
+    ]);
+
+    return {
+      data,
+      total,
+      currentPageSize: data.length,
+      hasNextPage: offset + data.length < total,
+      hasPreviousPage: offset > 0,
+      pageNumber: Math.floor(offset / limit) + 1,
+    };
   }
 
-  async getCampaigns() {
-    return this.campaignModel.find().sort({ createdAt: -1 }).limit(100).lean();
+  async getCampaigns({ limit, offset }: IPaginationQueryParams) {
+    const [data, total] = await Promise.all([
+      this.campaignModel
+        .find()
+        .sort({ createdAt: -1 })
+        .skip(offset)
+        .limit(limit)
+        .lean(),
+      this.campaignModel.countDocuments(),
+    ]);
+
+    return {
+      data,
+      total,
+      currentPageSize: data.length,
+      hasNextPage: offset + data.length < total,
+      hasPreviousPage: offset > 0,
+      pageNumber: Math.floor(offset / limit) + 1,
+    };
   }
 
   async sendNotification(dto: SendNotificationDto, createdBy: string) {

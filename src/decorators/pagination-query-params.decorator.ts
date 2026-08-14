@@ -45,7 +45,7 @@ export const PaginationQueryParams = createParamDecorator(
       );
     }
 
-    if (isNaN(page) || page < 0 || isNaN(size) || size < 0) {
+    if (isNaN(page) || page < 0 || isNaN(size) || size < 1) {
       throw new BadRequestException('Invalid pagination params');
     }
     //   Check if page and size are valid
