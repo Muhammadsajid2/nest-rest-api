@@ -3,6 +3,7 @@ import mongoose, { Document } from 'mongoose';
 import { User } from '../../users/schemas/user.schema';
 import { Category } from '../../category/schemas/category.schema';
 import { SubCategory } from '../../sub-category/schemas/sub-category.schema';
+import { VideoLinkType } from '../constants/link-type.enum';
 
 export type VideoDocument = Video & Document;
 
@@ -30,6 +31,20 @@ export class Video extends Document {
 
   @Prop({ type: [String], default: [] })
   url: string[];
+
+  @Prop({
+    type: String,
+    enum: Object.values(VideoLinkType),
+    default: VideoLinkType.M3U8,
+  })
+  linkType: VideoLinkType;
+
+  // ClearKey DRM keys, only used when linkType is MPD.
+  @Prop({ type: String, default: null })
+  clearKey1: string | null;
+
+  @Prop({ type: String, default: null })
+  clearKey2: string | null;
 
   @Prop()
   description: string;

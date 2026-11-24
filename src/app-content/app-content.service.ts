@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { Category, CategoryDocument } from '../category/schemas/category.schema';
 import { SubCategory, SubCategoryDocument } from '../sub-category/schemas/sub-category.schema';
 import { Video, VideoDocument } from '../video/schemas/video.schema';
+import { VideoLinkType } from '../video/constants/link-type.enum';
 
 @Injectable()
 export class AppContentService {
@@ -17,6 +18,17 @@ export class AppContentService {
   private asArray<T>(value: T | T[] | null | undefined): T[] {
     if (!value) return [];
     return Array.isArray(value) ? value : [value];
+  }
+
+  // Older videos have no linkType saved; they were all HLS (m3u8) links.
+  private getLinkFields(video: Partial<Video>) {
+    const linkType = video.linkType || VideoLinkType.M3U8;
+    const isMpd = linkType === VideoLinkType.MPD;
+    return {
+      linkType,
+      clearKey1: isMpd ? video.clearKey1 || null : null,
+      clearKey2: isMpd ? video.clearKey2 || null : null,
+    };
   }
 
   async getContent() {
@@ -59,6 +71,7 @@ export class AppContentService {
                 url: this.asArray(video.url)[0] || null,
                 description: video.description || '',
                 highlights: Boolean(video.highlights),
+                ...this.getLinkFields(video),
               })),
           })),
       })),
@@ -76,6 +89,7 @@ export class AppContentService {
         label: video.label,
         url: this.asArray(video.url)[0] || null,
         thumbnail: video.img,
+        ...this.getLinkFields(video),
       })),
     };
   }

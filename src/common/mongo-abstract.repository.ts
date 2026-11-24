@@ -696,6 +696,10 @@ export abstract class EntityRepository<T extends Document> {
     }
     let errorMessage = 'Database operation failed';
     let errorStatusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+    if (error?.name === 'ValidationError') {
+      errorStatusCode = HttpStatus.BAD_REQUEST;
+      errorMessage = error.message;
+    }
     switch (error.code) {
       case 11000:
         const duplicatedValues = JSON.stringify(error.keyValue);

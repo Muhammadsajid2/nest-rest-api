@@ -1,11 +1,14 @@
 import {
   IsArray,
   IsBoolean,
+  IsEnum,
   IsMongoId,
   IsNotEmpty,
   IsOptional,
   IsString,
+  ValidateIf,
 } from 'class-validator';
+import { VideoLinkType } from '../constants/link-type.enum';
 
 export class CreateVideoDto {
   @IsNotEmpty()
@@ -30,6 +33,21 @@ export class CreateVideoDto {
   @IsArray()
   @IsString({ each: true })
   url?: string[];
+
+  @IsOptional()
+  @IsEnum(VideoLinkType, { message: 'linkType must be either mpd or m3u8' })
+  linkType?: VideoLinkType;
+
+  // Required only for MPD links.
+  @ValidateIf((o) => o.linkType === VideoLinkType.MPD)
+  @IsNotEmpty({ message: 'clearKey1 is required when linkType is mpd' })
+  @IsString()
+  clearKey1?: string | null;
+
+  @ValidateIf((o) => o.linkType === VideoLinkType.MPD)
+  @IsNotEmpty({ message: 'clearKey2 is required when linkType is mpd' })
+  @IsString()
+  clearKey2?: string | null;
 
   @IsOptional()
   @IsString()

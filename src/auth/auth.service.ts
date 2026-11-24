@@ -23,11 +23,11 @@ export class AuthService {
   async signup(
     signupDto: SignupDto,
   ): Promise<{ token: string; statusCode: number; message: string }> {
-    const { name, email, password } = signupDto;
+    const { name, email, phone, password } = signupDto;
 
     // Check if user exists
     const existingUser = await this.authRepository.findOne({
-      $or: [{ email }],
+      $or: [{ email }, { phone }],
     });
     if (existingUser) {
       throw new ConflictException('Email or phone number already exists');
@@ -40,6 +40,7 @@ export class AuthService {
     const user = await this.authRepository.create({
       name,
       email,
+      phone,
       password: hashedPassword,
     });
 
