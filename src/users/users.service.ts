@@ -9,10 +9,13 @@ export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
   async findAll(paginationQueryParams: IPaginationQueryParams): Promise<any> {
-    const { limit, offset, sort, filter, populate, populateSelect } =
+    const { limit, offset, sort, filter, populate, populateSelect, search } =
       paginationQueryParams;
+    // Escape regex characters so input like "a(b" is matched literally.
+    const searchTerm = search?.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const whereFilter = {
       ...filter,
+      ...(searchTerm ? { name: { $regex: searchTerm, $options: 'i' } } : {}),
     };
 
     return this.usersRepository.findPaginatedLean(whereFilter, {

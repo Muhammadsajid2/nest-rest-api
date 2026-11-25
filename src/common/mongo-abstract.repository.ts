@@ -344,7 +344,7 @@ export abstract class EntityRepository<T extends Document> {
     const result = await this.options.entityModel
       .findOne(entityFilterQuery, projection)
       .sort(sort)
-      .populate(populate, populateSelect)
+      .populate(populate ?? '', populateSelect ?? '')
       .exec();
 
     return result as T;
